@@ -1,7 +1,6 @@
 version: '3.8'
 services:
-  # Applications
-
+  # ----------------------- Applications -----------------------
   catalog-service:
     depends_on:
       - polar-postgres
@@ -78,8 +77,19 @@ services:
       - BPL_DEBUG_PORT=9888
       - SPRING_PROFILES_ACTIVE=dev
 
-  # Backing Services
+  polar-keycloak:
+    image: quay.io/keycloak/keycloak:19.0
+    container_name: 'polar-keycloak'
+    command: start-dev --import-realm
+    volumes:
+      - ./keycloak:/opt/keycloak/data/import
+    environment:
+      - KEYCLOAK_ADMIN=user
+      - KEYCLOAK_ADMIN_PASSWORD=password
+    ports:
+      - 8080:8080
 
+  # ----------------------- Backing Services -----------------------
   polar-postgres:
     image: 'postgres:14.4'
     container_name: 'polar-postgres'
