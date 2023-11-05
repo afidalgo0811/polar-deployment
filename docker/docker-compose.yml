@@ -51,6 +51,7 @@ services:
   polar-edge-service:
     depends_on:
       - polar-redis
+      - polar-keycloak
     image: 'polar-edge-service'
     container_name: 'polar-edge-service'
     ports:
@@ -64,6 +65,7 @@ services:
       - ORDER_SERVICE_URL=http://order-service:9002
       - SPRING_CLOUD_CONFIG_URI=http://config-service:8888
       - SPRING_REDIS_HOST=polar-redis
+      - SPA_URL=http://polar-ui:9004
 
   config-service:
     image: 'config-service'
@@ -77,17 +79,13 @@ services:
       - BPL_DEBUG_PORT=9888
       - SPRING_PROFILES_ACTIVE=dev
 
-  polar-keycloak:
-    image: quay.io/keycloak/keycloak:19.0
-    container_name: 'polar-keycloak'
-    command: start-dev --import-realm
-    volumes:
-      - ./keycloak:/opt/keycloak/data/import
-    environment:
-      - KEYCLOAK_ADMIN=user
-      - KEYCLOAK_ADMIN_PASSWORD=password
+  polar-ui:
+    image: 'polar-ui'
+    container_name: 'polar-ui'
     ports:
-      - 8080:8080
+      - 9004:9004
+    environment:
+      - PORT=9004
 
   # ----------------------- Backing Services -----------------------
   polar-postgres:
@@ -113,3 +111,15 @@ services:
       - 15672:15672
     volumes:
       - ./rabbitmq/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf
+
+  polar-keycloak:
+    image: quay.io/keycloak/keycloak:19.0
+    container_name: 'polar-keycloak'
+    command: 'start-dev --import-realm'
+    volumes:
+      - ./keycloak:/opt/keycloak/data/import
+    environment:
+      - KEYCLOAK_ADMIN=user
+      - KEYCLOAK_ADMIN_PASSWORD=password
+    ports:
+      - 8080:8080

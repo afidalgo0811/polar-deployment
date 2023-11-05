@@ -303,7 +303,7 @@
           "attributes": {}
         }
       ],
-      "edge-service": [],
+      "polar-edge-service": [],
       "security-admin-console": [],
       "admin-cli": [],
       "account-console": [],
