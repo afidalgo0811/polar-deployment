@@ -52,6 +52,7 @@ services:
     depends_on:
       - polar-redis
       - polar-keycloak
+      - polar-ui
     image: 'polar-edge-service'
     container_name: 'polar-edge-service'
     ports:
